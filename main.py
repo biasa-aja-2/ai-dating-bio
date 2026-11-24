@@ -10,8 +10,9 @@ said, kept forever. The punch lands on the last word.
 The program writes that line to $MAKEFUN_OUTPUT_DIR/entry.txt
 (default /output) after passing the competition's gates: UTF-8 text,
 1-180 characters, a single line, not whitespace-only, no control
-characters. If any gate fails the program refuses to write anything
-and exits non-zero.
+characters -- counting DEL and tab as control characters, which the
+kit's gate does not name explicitly. If any gate fails the program
+refuses to write anything and exits non-zero.
 """
 
 import os
@@ -50,7 +51,7 @@ def gate_failures(text):
     if "\n" in text or "\r" in text:
         failures.append("entry must be a single line")
     for ch in text:
-        if ord(ch) < 0x20 and ch not in ("\t",):
+        if ord(ch) < 0x20 or ord(ch) == 0x7F:
             failures.append("entry contains a control character U+%04X" % ord(ch))
             break
     try:
